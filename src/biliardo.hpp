@@ -1,11 +1,22 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <memory>
+#include <exception>
+#include <string>
+
+class RenderingException : public std::exception {
+	std::string msg;
+	RenderingException(std::string msg) : msg(msg) {}
+	~MyException() throw () {}
+	const char* what() const throw() { return msg.c_str(); }
+}
 
 // Elemento che può essere renderizzato
 class Rendered {
 	public:
-		Rendered(SDL_Rect rect, char *img_path, SDL_Renderer *rend);
+		Rendered(SDL_Renderer *rend, SDL_Rect rect, SDL_Surface *surface);
+		Rendered(SDL_Renderer *rend, int x, int y, unsigned int radius, char *img_path);
+		Rendered(SDL_Renderer *rend, SDL_Rect rect, char *img_path);
 		void render(SDL_Renderer *rend);
 		~Rendered();
 	protected:
@@ -16,7 +27,7 @@ class Rendered {
 // Palla da biliardo
 class Ball : public Rendered {
 	public:
-		Ball(SDL_Rect rect, char *img_path, SDL_Renderer *rend) : Rendered(rect, img_path, rend);
+		Ball(SDL_Renderer *rend, int x, int y, unsigned int radius, char *img_path) : Rendered(rend, x, y, radius, img_path);
 		void calc_next();
 	private:
 		double vel_x;
@@ -43,10 +54,16 @@ class Hole : public Rendered {
 // Classe contenente tutti gli elementi del gioco
 class Pool {
 	public:
-		Pool();
-		void calc_next();
-		void render();
+		Pool(SDL_Renderer *rend, unsigned int height, unsigned int width, unsigned short balls_num);
+		// Calcola il frame successivo
+		void next_frame();
+		// Renderizza tutti gli elementi
+		void render(SDL_Renderer *rend);
 	private:
-		vector<shared_ptr<Rendered>> entities;
+		// Vettori contenenti i puntatore a tutti gli elementi del gioco
+		vector<std::shared_ptr<Rendered>> entities;
+		vector<std::shared_ptr<Ball>> balls;
+		vector<std::shared_ptr<Wall>> walls;
+		vector<std::shared_ptr<Hole>> holes;
 }
 

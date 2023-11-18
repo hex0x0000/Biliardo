@@ -1,7 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
-//#include <SDL2/SDL_timer.h>
- 
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
+
 int main(int argc, char *argv[])
 {
  
@@ -118,7 +121,7 @@ int main(int argc, char *argv[])
         SDL_RenderPresent(rend);
  
         // calculates to 60 fps
-        SDL_Delay(1000 / 60);
+        std::this_thread::sleep_for(16.667ms);
     }
  
     // destroy texture
