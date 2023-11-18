@@ -1,22 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(biliardo)
 
-#set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-#find_package(Threads REQUIRED)
-#find_package(OpenSSL REQUIRED)
-
-#add_subdirectory(SDL2)
-#set(SDL2IMAGE_INSTALL OFF)
-#set(BUILD_SHARED_LIBS FALSE)
-#add_subdirectory(SDL2_image)
-#include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
-
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
-#add_executable(${CMAKE_PROJECT_NAME} src/main.cpp)
-#target_link_libraries(${CMAKE_PROJECT_NAME} SDL2::SDL2-static SDL2_image-static)
-
 set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
@@ -43,5 +27,5 @@ set(BUILD_SHARED_LIBS FALSE)
 FetchContent_MakeAvailable(SDL2_image)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
-add_executable(${CMAKE_PROJECT_NAME} src/main.cpp)
+add_executable(${CMAKE_PROJECT_NAME} src/main.cpp src/biliardo.cpp)
 target_link_libraries(${CMAKE_PROJECT_NAME} SDL2::SDL2-static SDL2_image::SDL2_image-static)
