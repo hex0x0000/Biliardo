@@ -58,9 +58,13 @@ int main(int argc, char *argv[]) {
 						break;
 				}
 			}
+
 			// Pulisce lo schermo dal frame precedente
 			SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
 			SDL_RenderClear(rend);
+			
+			// Calcola il movimento e le collisioni
+			pool.physics(1000.0/60.0);
 
 			// Renderizza gli elementi del gioco
 			pool.render(rend);

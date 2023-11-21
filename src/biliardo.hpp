@@ -6,6 +6,8 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include <utility>
+#include <set>
 
 class RenderingException : public std::exception {
 	public:
@@ -23,20 +25,28 @@ class Rendered {
 		Rendered(SDL_Renderer *rend, SDL_Rect rect, std::string img_path);
 		void render(SDL_Renderer *rend);
 		~Rendered();
-	protected:
 		SDL_Rect rect;
+	protected:
 		SDL_Texture *texture;
 };
 
 // Palla da biliardo
 class Ball : public Rendered {
 	public:
-		Ball(SDL_Renderer *rend, int x, int y, int radius, std::string img_path, float friction, float mass);
-		void calc_next();
-	private:
+		Ball(SDL_Renderer *rend, int x, int y, int radius, std::string img_path, float friction, float mass, double vel_x = 0.0, double vel_y = 0.0);
+		// Calcolo movimento ogni frame
+		void movement(float time);
+		// Controlla se c'è una collisione
+		bool is_colliding(const std::shared_ptr<Ball> &ball);
+		// Calcola la collisione
+		void collide(std::shared_ptr<Ball> &ball);
 		double vel_x;
 		double vel_y;
-		double angle;
+		int x;
+		int y;
+		int before_x;
+		int before_y;
+	private:
 		float friction;
 		float mass;
 		int radius;
@@ -60,11 +70,12 @@ class Pool {
 	public:
 		Pool(SDL_Renderer *rend, int height, int width, int balls_num);
 		// Calcola il frame successivo
-		void next_frame();
+		void physics(float time);
 		// Renderizza tutti gli elementi
 		void render(SDL_Renderer *rend);
 	private:
 		SDL_Rect pool;
+		std::set<std::pair<int, int>> combinations;
 
 		// Vettori contenenti i puntatore a tutti gli elementi del gioco
 		std::vector<std::shared_ptr<Rendered>> elements;
