@@ -63,7 +63,7 @@ Ball::Ball(SDL_Renderer *rend, int x, int y, int radius, std::string img_path, f
 	: Rendered(rend, x, y, radius, img_path) {
 	this->vel_x = vel_x;
 	this->vel_y = vel_y;
-	this->friction = friction;
+	this->friction = friction / radius;
 	this->mass = mass;
 	this->radius = radius;
 	this->x = x;
@@ -75,16 +75,35 @@ Ball::Ball(SDL_Renderer *rend, int x, int y, int radius, std::string img_path, f
 void Ball::movement(float time) {
 	before_x = x;
 	before_y = y;
-	x += vel_x * time;
-	y += vel_y * time;
+	double delta_x = vel_x * time;
+	double delta_y = vel_y * time;
+	double friction = this->friction * time;
+	if (delta_x != 0.0) {
+		x += delta_x;
+		if (abs(vel_x) > friction)
+			vel_x += ((vel_x > 0) ? -1 : 1) * friction;
+		else
+			vel_x = 0;
+	}
+	
+	if (delta_y != 0.0) {
+		y += delta_y;
+		if (abs(vel_y) > friction)
+			vel_y += ((vel_y > 0) ? -1 : 1) * friction;
+		else
+			vel_y = 0;
+	}
+
+	// Imposta la posizione del rettangolo che mostra
+	// l'immagine della boccia
 	rect.x = x - radius;
 	rect.y = y - radius;
 	cout << "x: " << x << endl;
 	cout << "y: " << y << endl;
 	cout << "vel x: " << this->vel_x << endl;
 	cout << "vel y: " << this->vel_y << endl;
-	cout << "delta x: " << this->vel_x*time << endl;
-	cout << "delta y: " << this->vel_y*time << endl << endl;
+	cout << "delta x: " << delta_x << endl;
+	cout << "delta y: " << delta_y << endl << endl;
 }
 
 bool Ball::is_colliding(const shared_ptr<Ball> &ball) {
@@ -142,15 +161,15 @@ Pool::Pool(SDL_Renderer *rend, int height, int width, int balls_num) {
 		this->elements.push_back(ball);
 	}*/
 	
-	shared_ptr<Ball> ball = make_shared<Ball>(rend, 400, 400, 50, "test.png", 5, 1, 0.08, 0.13);
+	shared_ptr<Ball> ball = make_shared<Ball>(rend, 10, 10, 40, "test.png", 0.09, 2.5, 1.7, 2);
 	this->balls.push_back(ball);
 	this->elements.push_back(ball);
-	shared_ptr<Ball> ball1 = make_shared<Ball>(rend, 760, 760, 20, "test.png", 5, 1, -0.09, -0.09);
+	/*shared_ptr<Ball> ball1 = make_shared<Ball>(rend, 760, 760, 20, "test.png", 0.0005, 1, -0.12, -0.12);
 	this->balls.push_back(ball1);
 	this->elements.push_back(ball1);
-	shared_ptr<Ball> ball2 = make_shared<Ball>(rend, 200, 800, 30, "test.png", 5, 1, 0.2, -0.07);
+	shared_ptr<Ball> ball2 = make_shared<Ball>(rend, 200, 800, 30, "test.png", 0.0005, 1.4, 0.2, -0.3);
 	this->balls.push_back(ball2);
-	this->elements.push_back(ball2);
+	this->elements.push_back(ball2);*/
 	gen_combinations(this->combinations, this->balls.size());
 	cout << combinations.size() << endl;
 }
