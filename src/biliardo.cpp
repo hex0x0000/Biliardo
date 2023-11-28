@@ -164,6 +164,7 @@ void Wall::collide(std::shared_ptr<Ball> &ball) {
 	if (ball->has_intersection(&rect)) {
 		ball->vel_x *= x_turn;
 		ball->vel_y *= y_turn;
+		ball->reset_coords();
 #ifdef DEBUG
 		cout << "Collision with wall happened" << endl;
 #endif
@@ -184,7 +185,7 @@ void gen_combinations(set<pair<int, int>> &combinations, int size) {
 }
 
 Pool::Pool(SDL_Renderer *rend, int height, int width, int balls_num) {
-	this->pool = {.x = 0, .y = 200, .w = width, .h = height};
+	this->pool = {.x = 0, .y = 70, .w = width, .h = height};
 	/*for (int i = 0; i < balls_num; i++) {
 		shared_ptr<Ball> ball = make_shared<Ball>(rend, 500, 500, 75, "test.jpg", 0.3, 1);
 		this->balls.push_back(ball);
@@ -193,9 +194,20 @@ Pool::Pool(SDL_Renderer *rend, int height, int width, int balls_num) {
 	
 	shared_ptr<Ball> ball = make_shared<Ball>(rend, 
 			[](string &_) -> SDL_Surface* { return IMG_Load("test.png"); },
-			10, 10, 40, 0.009, 2.5, 0.9, 1.2);
+			700, 100, 40, 0.009, 2.5, 0.56, 0.61);
 	this->balls.push_back(ball);
 	this->elements.push_back(ball);
+	shared_ptr<Wall> wall = make_shared<Wall>(rend,
+			[height](string &_) -> SDL_Surface* {
+				SDL_Surface *surface = SDL_CreateRGBSurface(0, 50, height, 32, 0, 0, 0, 0);
+				SDL_LockSurface(surface);
+				SDL_memset(surface->pixels, 0xD3BC8D, surface->h * surface->pitch);
+				SDL_UnlockSurface(surface);
+				return surface;
+			},
+			width - 50, 100, height, 50, -1, 1);
+	this->walls.push_back(wall);
+	this->elements.push_back(wall);
 	/*shared_ptr<Ball> ball1 = make_shared<Ball>(rend, 760, 760, 20, "test.png", 0.009, 1, -0.9, -0.9);
 	this->balls.push_back(ball1);
 	this->elements.push_back(ball1);
