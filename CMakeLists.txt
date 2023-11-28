@@ -3,6 +3,12 @@ project(biliardo)
 
 set(CMAKE_CXX_STANDARD 20)
 
+if ( NOT CMAKE_BUILD_TYPE )
+    message( "Build Type not set, defaulting to Debug..." )
+    set( CMAKE_BUILD_TYPE Debug )
+	add_compile_definitions(DEBUG)
+endif()
+
 include(FetchContent)
 Set(FETCHCONTENT_QUIET FALSE)
 
