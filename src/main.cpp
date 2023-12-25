@@ -64,14 +64,14 @@ int main(int argc, char *argv[]) {
 			SDL_RenderClear(rend);
 			
 			// Calcola il movimento e le collisioni
-			pool.physics(1000.0/60.0);
+			pool.physics(1.0/64.0);
 
 			// Renderizza gli elementi del gioco
 			pool.render(rend);
 
 			// Mostra gli elementi e aspetta per fare 64 fps
 			SDL_RenderPresent(rend);
-			std::this_thread::sleep_for(16.667ms);
+			std::this_thread::sleep_for(15.625ms);
 		}
 	}
     
